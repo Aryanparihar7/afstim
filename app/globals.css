@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0A0A0B;
+  --surface: #111113;
+  --surface-raised: #17171A;
+  --border: #202024;
+  --border-strong: #2C2C32;
+  --text: #EFEFF1;
+  --text-muted: #8B8B93;
+  --text-subtle: #5A5A62;
+  --action-bg: #EFEFF1;
+  --action-fg: #0A0A0B;
+  --action-hover: #FFFFFF;
+  --pass: #7FB08A;
+  --fail: #C97B7B;
+  --pending: #5A5A62;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --t-fast: 120ms;
+  --t-base: 200ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme {
+  --color-*: initial;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-subtle: var(--text-subtle);
+  --color-action: var(--action-bg);
+  --color-action-fg: var(--action-fg);
+  --color-action-hover: var(--action-hover);
+  --color-pass: var(--pass);
+  --color-fail: var(--fail);
+  --color-pending: var(--pending);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
