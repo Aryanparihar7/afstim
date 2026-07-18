@@ -1,13 +1,151 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  LEARNER
+  ADMIN
+}
+
+enum AccessStatus {
+  PENDING
+  ACTIVE
+  REVOKED
+}
+
+enum MissionStatus {
+  LOCKED
+  AVAILABLE
+  IN_PROGRESS
+  VERIFIED
+}
+
+enum CheckState {
+  PENDING
+  PASS
+  FAIL
+}
+
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  passwordHash   String
+  name           String?
+  emailVerified  DateTime?
+  role           Role          @default(LEARNER)
+  accessStatus   AccessStatus  @default(PENDING)   // manual gate; no payments in v0.1
+  createdAt      DateTime      @default(now())
+
+  aiCallsToday   Int           @default(0)
+  aiCallsResetAt DateTime      @default(now())
+
+  sessions       Session[]
+  enrollments    Enrollment[]
+  progress       MissionProgress[]
+  cliTokens      CliToken[]
+  submissions    Submission[]
+  aiMessages     AiMessage[]
+  events         Event[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model Enrollment {
+  id           String    @id @default(cuid())
+  userId       String
+  journeySlug  String                    // -> content/journeys/<slug>
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, journeySlug])
+}
+
+model MissionProgress {
+  id             String        @id @default(cuid())
+  userId         String
+  journeySlug    String
+  missionSlug    String
+  status         MissionStatus @default(AVAILABLE)
+  checkResults   Json          @default("[]")   // [{ id, state, message, at }]
+  reflection     String?
+  attempts       Int           @default(0)
+  firstAttemptAt DateTime?
+  verifiedAt     DateTime?
+  updatedAt      DateTime      @updatedAt
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, missionSlug])
+  @@index([userId, journeySlug])
+}
+
+model CliToken {
+  id         String    @id @default(cuid())
+  userId     String
+  tokenHash  String    @unique          // sha256 of the token; plaintext shown once
+  label      String?
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model Submission {                       // learner-declared URLs for server-side checks
+  id          String   @id @default(cuid())
+  userId      String
+  missionSlug String
+  kind        String                     // "public_url" | "repo_url"
+  value       String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, missionSlug])
+}
+
+model AiMessage {
+  id          String   @id @default(cuid())
+  userId      String
+  missionSlug String?
+  role        String                     // "user" | "assistant"
+  content     String
+  tokensIn    Int      @default(0)
+  tokensOut   Int      @default(0)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, createdAt])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  category  String                       // bug | idea | confusing | other
+  message   String
+  email     String?
+  createdAt DateTime @default(now())
+}
+
+model Event {                            // analytics. cheap, ours, no third party.
+  id        String   @id @default(cuid())
+  userId    String?
+  type      String                       // mission_started | check_run | mission_verified | ...
+  payload   Json     @default("{}")
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@index([type, createdAt])
 }
