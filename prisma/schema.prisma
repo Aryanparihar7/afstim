@@ -68,6 +68,17 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model EmailOtp {
+  id         String    @id @default(cuid())
+  email      String
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+  @@index([email])
+}
+
 model Enrollment {
   id           String    @id @default(cuid())
   userId       String
@@ -148,4 +159,14 @@ model Event {                            // analytics. cheap, ours, no third par
   createdAt DateTime @default(now())
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   @@index([type, createdAt])
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  ip        String
+  success   Boolean
+  createdAt DateTime @default(now())
+  @@index([email, createdAt])
+  @@index([ip, createdAt])
 }
