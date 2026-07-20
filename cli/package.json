@@ -1,0 +1,28 @@
+{
+  "name": "afstim",
+  "version": "0.1.0",
+  "description": "The Afstim CLI. Checks your work against your current mission.",
+  "type": "module",
+  "bin": {
+    "afstim": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "execa": "^9.5.2",
+    "fast-glob": "^3.3.3",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.9",
+    "typescript": "^5.7.2"
+  }
+}

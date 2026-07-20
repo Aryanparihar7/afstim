@@ -45,11 +45,33 @@ export async function sendAccountExistsEmail(to: string, name: string | null = n
     from,
     to,
     subject: "Someone tried to sign up with your email",
-    
+
     text: `Hi ${name || "there"},\n\nSomeone just tried to create an Afstim account with this email address. If that was you, you already have an account — sign in instead.\n\n${link}`,
   });
 
   if (error) {
     throw new Error(`Failed to send account-exists email: ${error.message}`);
+  }
+}
+
+export async function sendFeedbackNotificationEmail(input: {
+  category: string;
+  message: string;
+  email: string | null;
+}): Promise<void> {
+  const { resend, from } = getClient();
+
+  const { error } = await resend.emails.send({
+    from,
+    to: "aryanparihar712@gmail.com",
+    replyTo: input.email ?? undefined,
+    subject: `New Afstim feedback: ${input.category}`,
+    text: `Category: ${input.category}\n\n${input.message}${
+      input.email ? `\n\nReply-to: ${input.email}` : ""
+    }`,
+  });
+
+  if (error) {
+    throw new Error(`Failed to send feedback notification email: ${error.message}`);
   }
 }
