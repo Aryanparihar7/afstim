@@ -28,7 +28,8 @@ export default auth((req) => {
     // an unverified session would bounce forever between /login and the
     // (app) gate below, which redirects unverified sessions back to /login.
     if (session?.user?.emailVerified) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      // TEMP: redirect to first journey until Dashboard module ships.
+      return NextResponse.redirect(new URL("/journey/ship-your-first-app", req.url));
     }
     return NextResponse.next();
   }
@@ -55,7 +56,8 @@ export default auth((req) => {
 
   if (pathname === "/pending") {
     if (session.user.accessStatus === "ACTIVE") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      // TEMP: redirect to first journey until Dashboard module ships.
+      return NextResponse.redirect(new URL("/journey/ship-your-first-app", req.url));
     }
     return NextResponse.next();
   }

@@ -29,7 +29,7 @@ export async function sendVerificationEmail(
     from,
     to,
     subject: "Verify your email for Afstim",
-    text: `Hyy ${name || "there"}!,\n\nEnter this code to confirm this is you. It expires in 15 minutes.\n\n${code}\n\nIf you didn't request this, ignore this email.`,
+    text: `Hi ${name || "there"},\n\nEnter this code to confirm this is you. It expires in 15 minutes.\n\n${code}\n\nIf you didn't request this, ignore this email.`,
   });
 
   if (error) {
@@ -44,9 +44,9 @@ export async function sendAccountExistsEmail(to: string, name: string | null = n
   const { error } = await resend.emails.send({
     from,
     to,
-    subject: "Welcome back! or Someone tried to register with your email",
+    subject: "Someone tried to sign up with your email",
     
-    text: `Hyy ${name || "there"}!,\n\nSomeone just tried to create an Afstim account with this email address. If that was you, you already have an account — sign in instead.\n\n${link}`,
+    text: `Hi ${name || "there"},\n\nSomeone just tried to create an Afstim account with this email address. If that was you, you already have an account — sign in instead.\n\n${link}`,
   });
 
   if (error) {

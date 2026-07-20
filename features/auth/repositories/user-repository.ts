@@ -32,6 +32,16 @@ export async function markEmailVerified(userId: string) {
   });
 }
 
+export async function updatePasswordHashByEmail(
+  email: string,
+  passwordHash: string
+) {
+  return prisma.user.update({
+    where: { email },
+    data: { passwordHash },
+  });
+}
+
 export async function createVerificationToken(input: {
   identifier: string;
   token: string;

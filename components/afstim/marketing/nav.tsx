@@ -10,9 +10,14 @@ function Nav() {
         <Link href="/" aria-label="Afstim home">
           <Eyebrow>Afstim</Eyebrow>
         </Link>
-        <Button asChild variant="secondary" size="sm">
-          <Link href="/register">Start the journey</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/login">Log in</Link>
+          </Button>
+          <Button asChild variant="secondary" size="sm">
+            <Link href="/register">Start the journey</Link>
+          </Button>
+        </div>
       </div>
     </nav>
   );

@@ -1,6 +1,7 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import "next-auth/jwt";
+import type { AccessStatus, Role } from "@prisma/client";
 import { z } from "zod";
 
 import authConfig from "@/auth.config";
@@ -12,6 +13,11 @@ import { verifyPassword } from "@/features/auth/services/password-service";
 import { env } from "@/lib/env";
 
 declare module "next-auth" {
+  interface User {
+    role: Role;
+    accessStatus: AccessStatus;
+    emailVerified: Date | null;
+  }
   interface Session {
     user: { id: string } & DefaultSession["user"];
   }
@@ -20,6 +26,9 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     sessionToken?: string;
+    role?: Role;
+    accessStatus?: AccessStatus;
+    emailVerified?: Date | null;
   }
 }
 
@@ -66,7 +75,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // which of "no such user" or "wrong password" it was.
         if (!user || !isValid) return null;
 
-        return { id: user.id, email: user.email, name: user.name };
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          accessStatus: user.accessStatus,
+          emailVerified: user.emailVerified,
+        };
       },
     }),
   ],
@@ -81,6 +97,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
         token.sessionToken = sessionToken;
         token.sub = user.id;
+        token.role = user.role;
+        token.accessStatus = user.accessStatus;
+        token.emailVerified = user.emailVerified;
         return token;
       }
 
@@ -90,6 +109,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.sessionToken
       );
       if (!result || result.session.expires < new Date()) return null;
+
+      // Re-read on every request (not just at sign-in) so a role/access
+      // flip in Prisma Studio takes effect on the user's next request,
+      // not the next JWT refresh cycle.
+      token.role = result.user.role;
+      token.accessStatus = result.user.accessStatus;
+      token.emailVerified = result.user.emailVerified;
 
       const remainingMs = result.session.expires.getTime() - Date.now();
       if (remainingMs < SESSION_MAX_AGE_MS - REFRESH_THRESHOLD_MS) {
@@ -105,6 +131,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.sub) {
         session.user.id = token.sub;
       }
+      if (token.role) session.user.role = token.role;
+      if (token.accessStatus) session.user.accessStatus = token.accessStatus;
+      session.user.emailVerified = token.emailVerified ?? null;
       return session;
     },
   },

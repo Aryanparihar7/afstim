@@ -1,0 +1,8 @@
+slug: ship-your-first-app
+title: Ship your first app
+objective: Take an idea from an empty folder to a live, HTTPS URL with a real database.
+outcome: A public web app you built, deployed, and can change and redeploy in one command.
+estimatedHours: 12
+missions:
+  - set-up-your-machine
+  - create-and-commit

@@ -81,6 +81,16 @@ export async function issueEmailOtp(email: string, name: string | null = null): 
   await sendVerificationEmail(email, code, name);
 }
 
+/**
+ * Whether the email already has a live, unexpired code — lets a caller skip
+ * a redundant issueEmailOtp (e.g. a repeated login attempt) instead of
+ * piling up new codes for someone who already has one that works.
+ */
+export async function hasValidEmailOtp(email: string): Promise<boolean> {
+  const record = await findActiveEmailOtp(email);
+  return Boolean(record && record.expiresAt >= new Date());
+}
+
 type VerifyResult =
   | { ok: true }
   | { ok: false; reason: "no_code" | "wrong" | "too_many_attempts" };

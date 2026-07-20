@@ -1,0 +1,42 @@
+---
+slug: set-up-your-machine
+order: 1
+title: Set up your machine
+objective: Install the tools every later mission assumes you already have.
+capability: You can confirm Node, Git, and the GitHub CLI are installed and working.
+duration: 15
+difficulty: beginner
+prerequisites: []
+optional: false
+submissions: []
+checks:
+  - id: node-installed
+    type: command_succeeds
+    label: Node.js is installed
+    run: node --version
+    hint: If this fails, install Node from nodejs.org (the LTS version), then open a new terminal — a terminal you already had open won't see a fresh install.
+  - id: git-installed
+    type: command_succeeds
+    label: Git is installed
+    run: git --version
+    hint: If this fails, install Git from git-scm.com. On a Mac, installing Xcode Command Line Tools also gets you Git.
+  - id: gh-installed
+    type: command_succeeds
+    label: The GitHub CLI is installed
+    run: gh --version
+    hint: Install it from cli.github.com, then run gh auth login once so later missions can push and open pull requests without you re-entering credentials.
+reflection:
+  - Which of these three did you already have installed, and which one was new to you?
+---
+
+## Why this mission exists
+
+Every mission after this one assumes three things are already true: you can run JavaScript locally, you can save your work with Git, and you can talk to GitHub from your terminal. Missing any one of them turns mission 3 or 4 into a tools problem instead of a shipping problem.
+
+## What you're going to do
+
+1. Install Node.js — the current LTS version — from nodejs.org, or with a version manager if you already use one.
+2. Install Git from git-scm.com.
+3. Install the GitHub CLI from cli.github.com.
+4. Open a new terminal window. A terminal you already had open won't see tools you just installed.
+5. Run each command below and confirm it prints a version number instead of an error.

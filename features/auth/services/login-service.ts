@@ -12,6 +12,11 @@ import {
 } from "@/features/auth/repositories/login-attempt-repository";
 import { findUserByEmail } from "@/features/auth/repositories/user-repository";
 import { verifyPassword } from "@/features/auth/services/password-service";
+import {
+  hasValidEmailOtp,
+  issueEmailOtp,
+  setPendingVerificationCookie,
+} from "@/features/auth/services/verification-service";
 
 const LOCKOUT_WINDOW_MS = 15 * 60 * 1000;
 const EMAIL_FAILURE_LIMIT = 5;
@@ -79,6 +84,10 @@ export async function loginUser(
   await clearAttemptsForEmail(email);
 
   if (!user.emailVerified) {
+    if (!(await hasValidEmailOtp(user.email))) {
+      await issueEmailOtp(user.email, user.name);
+    }
+    await setPendingVerificationCookie(user.email);
     redirect(`/verify?email=${encodeURIComponent(email)}`);
   }
 
@@ -90,7 +99,8 @@ export async function loginUser(
     return { ok: false, message: GENERIC_FAILURE_MESSAGE };
   }
 
-  redirect("/dashboard");
+  // TEMP: redirect to first journey until Dashboard module ships.
+  redirect("/journey/ship-your-first-app");
 }
 
 export async function logoutUser(): Promise<void> {

@@ -78,6 +78,7 @@ Mark ✅ only after **you** pass the Founder Gate.
 | M09 | Register + verification email | M08, M02 | 4h | ☐ |
 | M10 | Login, logout, lockout | M09 | 3h | ☐ |
 | M11 | Route protection + access gate | M10 | 2h | ☐ |
+| M40b | Password reset flow | M11 | 3h | ☐ |
 
 ### Track C — Content
 
@@ -161,6 +162,8 @@ M00 → M03 → M04 → M08 → M09 → M10 → M11 → M12 → M13 → M14 → 
 ```
 
 **M35 and M36 are the only modules that prove the business.** Everything before them is scaffolding. If you're ever unsure what to do next, it's whatever gets you to M36 fastest.
+
+**M40b (password reset) isn't on this chain, but must be done before M35 starts.** M35's Founder Gate puts a real stranger through mission 1 — that person can't be locked out with nowhere to go.
 
 ---
 

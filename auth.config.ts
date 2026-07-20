@@ -5,8 +5,7 @@ const ONE_DAY_SECONDS = 24 * 60 * 60;
 
 // Edge-safe config only — no Prisma, no Argon2. Providers with Node-only
 // authorize() logic (and the callbacks that touch the database) are added
-// in auth.ts. This split exists so a future middleware.ts can import this
-// file alone without pulling in Node-only dependencies.
+// in auth.ts.
 export default {
   pages: {
     signIn: "/login",

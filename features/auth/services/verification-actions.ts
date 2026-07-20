@@ -43,7 +43,7 @@ export async function resendVerificationCode(
   }
 
   await invalidateActiveEmailOtps(parsed.data);
-  await issueEmailOtp(parsed.data);
+  await issueEmailOtp(parsed.data, user.name);
 
   if (!cookieEmail) {
     await setPendingVerificationCookie(parsed.data);

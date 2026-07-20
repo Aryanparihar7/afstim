@@ -35,7 +35,8 @@ export function VerifyForm({ email }: { email: string | null }) {
         return;
       }
 
-      router.push("/dashboard");
+      // TEMP: redirect to first journey until Dashboard module ships.
+      router.push("/journey/ship-your-first-app");
     } catch {
       setError("Something went wrong on our side. Try again in a moment.");
     } finally {

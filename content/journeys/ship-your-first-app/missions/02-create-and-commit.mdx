@@ -1,0 +1,38 @@
+---
+slug: create-and-commit
+order: 2
+title: Create and commit
+objective: Turn an empty folder into a real project with its first saved commit.
+capability: You can initialize a Git repository, make a change, and commit it with a message that explains why.
+duration: 20
+difficulty: beginner
+prerequisites: [set-up-your-machine]
+optional: false
+submissions: []
+checks:
+  - id: readme-exists
+    type: file_exists
+    label: A README.md file exists
+    path: README.md
+    hint: Create it by running touch README.md, then add a line describing the project. The filename has to match exactly, capital letters included.
+  - id: has-a-commit
+    type: command_succeeds
+    label: The project has at least one commit
+    run: git log -1
+    hint: If this fails with "does not have any commits yet", you ran git init but never ran git add and git commit.
+reflection:
+  - You could delete this folder right now and get it back from a commit. What's the last thing you built that you couldn't get back?
+---
+
+## Why this mission exists
+
+A folder full of code with no commits is one bad `rm -rf` away from gone. Committing isn't paperwork — it's the one habit that makes every later mistake reversible.
+
+## What you're going to do
+
+1. Make a new folder for this project and open a terminal inside it.
+2. Run `git init` to start tracking it with Git.
+3. Create a README.md file with one line describing the project.
+4. Run `git add .` to stage the file.
+5. Run `git commit -m "Initial commit"` — the message should say what this commit does, not just "commit".
+6. Run `git log` and confirm you can see the commit you just made.
